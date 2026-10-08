@@ -1,5 +1,5 @@
 import {validateUsername} from '../validations/profileValidation.js';
-import {getPokemon, getPokemonList, getPokemonData} from '../api/pokeApi.js';
+import {getPokemonList, getPokemonData} from '../api/pokeApi.js';
 
 export function renderProfile(app) {
     app.innerHTML = `
@@ -17,13 +17,14 @@ export function renderProfile(app) {
     </form>
     `;
 
+    let selectedPokemon = null;
+
     const form = document.getElementById('profile-form');
     form.addEventListener('submit', (event) => {
         event.preventDefault();
 
         const username = document.getElementById('username').value;
         const usernameError = document.getElementById('usernameError');
-        const pokemonFav = document.getElementById('pokemonFav').value;
         const pokemonFavError = document.getElementById('pokemonFavError');
 
         if (!validateUsername(username)) {
@@ -32,18 +33,11 @@ export function renderProfile(app) {
             usernameError.textContent = '';
         }
 
-        getPokemon(pokemonFav)
-        .then(exists => {
-            if (!exists) {
-                pokemonFavError.textContent = 'El Pokémon ingresado no existe.';
-            } else {
+        if (selectedPokemon === null) {
+            pokemonFavError.textContent = 'Por favor, selecciona un Pokémon válido de la lista.';
+        } else {
                 pokemonFavError.textContent = '';
-            }
-        })
-        .catch(error => {
-            console.error('Error al verificar el Pokémon:', error);
-            pokemonFavError.textContent = 'Ocurrió un error al verificar el Pokémon.';
-        });
+        }
 
     });
 
@@ -57,6 +51,8 @@ export function renderProfile(app) {
         });
 
     pokemonFavInput.addEventListener('input', () => {
+        selectedPokemon = null;
+        pokemonSelectedContainer.innerHTML = '';
         if (pokemonList.length === 0) {
             return;
         }
@@ -74,22 +70,23 @@ export function renderProfile(app) {
 
     });
 
-   const pokemonSelected = document.getElementById('pokemonSelected');
+   const pokemonSelectedContainer = document.getElementById('pokemonSelected');
 
     pokemonFavSuggestions.addEventListener('click', (event) => {
         if (event.target.tagName === 'DIV') {
             pokemonFavInput.value = event.target.textContent;
             pokemonFavSuggestions.innerHTML = '';
 
-            getPokemonData(pokemonFavInput.value.trim().toLowerCase())
-        .then(data => {
-            if (data) {
-                pokemonSelected.innerHTML = `
-                <img src="${data.sprites.front_default}" alt="${data.name}">
-                <p>${data.name}</p>
-                `;
-            }
-        })
+        getPokemonData(pokemonFavInput.value.trim().toLowerCase())
+            .then(data => {
+                selectedPokemon = data;
+                if (data) {
+                    pokemonSelectedContainer.innerHTML = `
+                    <img src="${data.sprites.front_default}" alt="${data.name}">
+                    <p>${data.name}</p>
+                    `;
+                }
+            })
         .catch(error => {
             console.error('Error al obtener los datos del Pokémon:', error);
         });
