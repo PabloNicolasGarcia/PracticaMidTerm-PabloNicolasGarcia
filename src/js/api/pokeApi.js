@@ -1,10 +1,3 @@
-export function getPokemon(namePokemon) {
-    return fetch(`https://pokeapi.co/api/v2/pokemon/${namePokemon}`)
-    .then(response => {
-        return response.ok;
-    });   
-}
-
 export function getPokemonList() {
     return fetch('https://pokeapi.co/api/v2/pokemon?limit=2000')
     .then(response => response.json())
