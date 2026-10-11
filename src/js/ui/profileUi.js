@@ -1,5 +1,8 @@
 import {validateUsername} from '../validations/profileValidation.js';
 import {getPokemonList, getPokemonData} from '../api/pokeApi.js';
+import {User} from '../models/user.js';
+import {Pokemon} from '../models/pokemon.js';
+import {saveUserToSessionStorage} from '../storage/sessionStorage.js';
 
 export function renderProfile(app) {
     app.innerHTML = `
@@ -29,16 +32,22 @@ export function renderProfile(app) {
 
         if (!validateUsername(username)) {
             usernameError.textContent = 'El nombre de usuario debe tener entre 3 y 15 caracteres.';
+            return;
         } else {
             usernameError.textContent = '';
         }
 
         if (selectedPokemon === null) {
             pokemonFavError.textContent = 'Por favor, selecciona un Pokémon válido de la lista.';
+            return;
         } else {
-                pokemonFavError.textContent = '';
+            pokemonFavError.textContent = '';
         }
 
+        const user = new User(username, new Pokemon(selectedPokemon.name, selectedPokemon.id, selectedPokemon.sprites.front_default));
+        saveUserToSessionStorage(user);
+
+        console.log('Perfil creado:', user);
     });
 
     const pokemonFavInput = document.getElementById('pokemonFav');
