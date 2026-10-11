@@ -3,8 +3,11 @@ export function saveUserToSessionStorage(user) {
     sessionStorage.setItem('user', userJSON);
 }
 
-
 export function getUserFromSessionStorage() {
     const userJSON = sessionStorage.getItem('user');
     return userJSON ? JSON.parse(userJSON) : null;
+}
+
+export function clearUserFromSessionStorage() {
+    sessionStorage.removeItem('user');
 }
