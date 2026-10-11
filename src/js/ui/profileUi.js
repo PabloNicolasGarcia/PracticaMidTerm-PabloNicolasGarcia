@@ -3,6 +3,7 @@ import {getPokemonList, getPokemonData} from '../api/pokeApi.js';
 import {User} from '../models/user.js';
 import {Pokemon} from '../models/pokemon.js';
 import {saveUserToSessionStorage} from '../storage/sessionStorage.js';
+import {renderGame} from './gameUi.js';
 
 export function renderProfile(app) {
     app.innerHTML = `
@@ -47,7 +48,7 @@ export function renderProfile(app) {
         const user = new User(username, new Pokemon(selectedPokemon.name, selectedPokemon.id, selectedPokemon.sprites.front_default));
         saveUserToSessionStorage(user);
 
-        console.log('Perfil creado:', user);
+        renderGame(app, user);
     });
 
     const pokemonFavInput = document.getElementById('pokemonFav');
