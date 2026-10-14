@@ -16,7 +16,7 @@ export function renderProfile(app) {
     <input type="text" id="pokemonFav" name="pokemonFav" required>
     <div id="pokemonFavSuggestions"></div>
     <div id="pokemonSelected"></div>
-    <p id="pokemonFavError" style="color: red;"></p>
+    <p id="pokemonFavError" style="color: red;"></p> <p id="pokemonFavStatus"></p>
     <button type="submit">Crear Perfil</button>
     </form>
     `;
@@ -53,11 +53,22 @@ export function renderProfile(app) {
 
     const pokemonFavInput = document.getElementById('pokemonFav');
     const pokemonFavSuggestions = document.getElementById('pokemonFavSuggestions');
+    const pokemonFavError = document.getElementById('pokemonFavError');
+    const pokemonFavStatus = document.getElementById('pokemonFavStatus')
+    pokemonFavInput.disabled = true;
+    pokemonFavStatus.textContent = 'Cargando Pokémon…';
 
     let pokemonList = [];
     getPokemonList()
         .then(data => {
             pokemonList = data.results;
+            pokemonFavInput.disabled = false;
+            pokemonFavStatus.textContent = '';
+        })
+        .catch(error => {
+            pokemonFavStatus.textContent = '';
+            pokemonFavError.textContent = 'No se pudo cargar la lista de Pokémon. Inténtalo recargando la página.';
+            console.error(error);
         });
 
     pokemonFavInput.addEventListener('input', () => {
@@ -86,9 +97,12 @@ export function renderProfile(app) {
         if (event.target.tagName === 'DIV') {
             pokemonFavInput.value = event.target.textContent;
             pokemonFavSuggestions.innerHTML = '';
+            selectedPokemon = null;
+            pokemonSelectedContainer.innerHTML = '';
 
         getPokemonData(pokemonFavInput.value.trim().toLowerCase())
             .then(data => {
+                pokemonFavError.textContent = '';
                 selectedPokemon = data;
                 if (data) {
                     pokemonSelectedContainer.innerHTML = `
@@ -97,9 +111,12 @@ export function renderProfile(app) {
                     `;
                 }
             })
-        .catch(error => {
-            console.error('Error al obtener los datos del Pokémon:', error);
-        });
+            .catch(error => {
+                console.error('Error al obtener los datos del Pokémon:', error);
+                selectedPokemon = null;
+                pokemonSelectedContainer.innerHTML = '';
+                pokemonFavError.textContent = 'No se pudo cargar el Pokémon. Vuelve a buscarlo y seleccionarlo.';
+            });
 
         }
 
