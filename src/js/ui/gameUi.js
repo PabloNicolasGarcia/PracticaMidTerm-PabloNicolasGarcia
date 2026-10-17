@@ -28,6 +28,7 @@ export function renderGame(app, user) {
         </aside>
     `;
 
+    let cleanupBoard = null;
     const startGameButton = document.getElementById('startGameButton');
     startGameButton.addEventListener('click', async () => {
         const numCartasInput = document.getElementById('numCartas');
@@ -53,7 +54,7 @@ export function renderGame(app, user) {
             }
 
             console.log(cards);
-            renderBoard(startingGame);
+            cleanupBoard = renderBoard(startingGame, cards);
         } catch (error) {
             numCartasError.textContent = error.message;
         } finally {
@@ -65,9 +66,12 @@ export function renderGame(app, user) {
 
     const logoutButton = document.getElementById('logoutButton');
     logoutButton.addEventListener('click', () => {
+        if (typeof cleanupBoard === 'function') {
+            cleanupBoard();
+        }
         clearUserFromSessionStorage();
         renderProfile(app);
     });
 
-console.log('Usuario en renderGame:', user);
+    console.log('Usuario en renderGame:', user);
 }
