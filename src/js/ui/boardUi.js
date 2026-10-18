@@ -1,6 +1,10 @@
 import cardBackUrl from '../../assets/card-back.jpg';
 
-export function renderBoard(container, cards) {
+export function renderBoard(container, cards, onRestart) {
+    if (typeof onRestart !== 'function') {
+        throw new Error('No se recibió una función válida para reiniciar')
+    }
+
     if (!Array.isArray(cards) || cards.length === 0) {
         throw new Error('No hay cartas disponibles para mostrar');
     }
@@ -90,6 +94,11 @@ export function renderBoard(container, cards) {
         })
     });
 
+    const restartGame = container.querySelector('#restartGame')
+    restartGame.addEventListener('click', () => {
+        cleanupGame();
+        onRestart(cards);
+    })
     return cleanupGame;
 
 }
