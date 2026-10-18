@@ -3,6 +3,8 @@ import {renderProfile} from './profileUi.js';
 import {numCartasValidation} from '../validations/gameValidations.js';
 import { renderBoard } from './boardUi.js';
 import { prepareGame, shuffleCards } from '../game/gameSetup.js';
+import { GameResult } from '../models/gameResult.js';
+import { saveGameResult } from '../storage/gameHistoryStorage.js';
 
 export function renderGame(app, user) {
     app.innerHTML = `
@@ -56,7 +58,7 @@ export function renderGame(app, user) {
             }
 
             console.log(cards);
-            cleanupBoard = renderBoard(startingGame, cards, restartGame);
+            cleanupBoard = renderBoard(startingGame, cards, restartGame, finishGame);
         } catch (error) {
             gameError.textContent = error.message;
         } finally {
@@ -79,10 +81,22 @@ export function renderGame(app, user) {
         gameError.textContent = '';
         try{
             shuffleCards(cards);
-            cleanupBoard = renderBoard(startingGame, cards, restartGame);
+            cleanupBoard = renderBoard(startingGame, cards, restartGame, finishGame);
         } catch (error) {
             gameError.textContent = error.message;
         }
+    }
+
+    function finishGame(elapsedMilliseconds, numCards) {
+        try {
+            const id = crypto.randomUUID()
+            const gameResult = new GameResult(id, user.userName, user.pokemonFavorite, elapsedMilliseconds, numCards);
+            saveGameResult(gameResult);
+            console.log(gameResult);
+        } catch {
+            gameError.textContent = 'No se puedo guardar el registro de la partida correctamente'
+        }
+        
     }
 
     console.log('Usuario en renderGame:', user);
