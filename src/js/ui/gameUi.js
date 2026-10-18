@@ -2,7 +2,7 @@ import {clearUserFromSessionStorage} from '../storage/sessionStorage.js';
 import {renderProfile} from './profileUi.js';
 import {numCartasValidation} from '../validations/gameValidations.js';
 import { renderBoard } from './boardUi.js';
-import { numPokemonsRequired, prepareGame } from '../game/gameSetup.js';
+import { prepareGame, shuffleCards } from '../game/gameSetup.js';
 
 export function renderGame(app, user) {
     app.innerHTML = `
@@ -18,23 +18,25 @@ export function renderGame(app, user) {
         <section id="startingGame">
             <label for="numCartas">Número de cartas:</label>
             <input type="number" id="numCartas" name="numCartas">
-            <p id="numCartasError" style="color: red;"></p>
             <button id="startGameButton">Iniciar Juego</button>
         </section>
+        <p id="gameError" style="color: red;"></p>
+        <p id="numCartasError" style="color: red;"></p>
         <aside id="ranking">
             <h2>Ranking partidas</h2>
             <div id= "listaRanking"></div>
             <p id="sinListaRanking"> Todavía no hay resultados </p>
         </aside>
     `;
-
+    const startingGame = document.getElementById('startingGame')
+    const gameError = document.getElementById('gameError')
     let cleanupBoard = null;
     const startGameButton = document.getElementById('startGameButton');
     startGameButton.addEventListener('click', async () => {
         const numCartasInput = document.getElementById('numCartas');
         const numCartasError = document.getElementById('numCartasError');
-        const numCartas = Number(numCartasInput.value);
-        const startingGame = document.getElementById('startingGame')
+        const numCartas = Number(numCartasInput.value);  
+        gameError.textContent = '';      
 
         if (!numCartasValidation(numCartas)) {
             numCartasError.textContent = 'El numero de cartas debe de ser positivo, entero y par';
@@ -43,9 +45,9 @@ export function renderGame(app, user) {
             numCartasError.textContent = '';
         }
 
-
         startGameButton.disabled = true;
         startGameButton.textContent = 'Cargando…';
+        
         try {
             const cards = await prepareGame(numCartas);
 
@@ -54,9 +56,9 @@ export function renderGame(app, user) {
             }
 
             console.log(cards);
-            cleanupBoard = renderBoard(startingGame, cards);
+            cleanupBoard = renderBoard(startingGame, cards, restartGame);
         } catch (error) {
-            numCartasError.textContent = error.message;
+            gameError.textContent = error.message;
         } finally {
             startGameButton.disabled = false;
             startGameButton.textContent = 'Iniciar Juego';
@@ -72,6 +74,16 @@ export function renderGame(app, user) {
         clearUserFromSessionStorage();
         renderProfile(app);
     });
+
+    function restartGame(cards) {
+        gameError.textContent = '';
+        try{
+            shuffleCards(cards);
+            cleanupBoard = renderBoard(startingGame, cards, restartGame);
+        } catch (error) {
+            gameError.textContent = error.message;
+        }
+    }
 
     console.log('Usuario en renderGame:', user);
 }
