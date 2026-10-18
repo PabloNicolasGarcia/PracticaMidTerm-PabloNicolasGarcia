@@ -1,8 +1,12 @@
 import cardBackUrl from '../../assets/card-back.jpg';
 
-export function renderBoard(container, cards, onRestart) {
+export function renderBoard(container, cards, onRestart, onFinish) {
     if (typeof onRestart !== 'function') {
         throw new Error('No se recibió una función válida para reiniciar')
+    }
+
+    if (typeof onFinish !== 'function') {
+        throw new Error('No se recibió una función válida para finalizar')
     }
 
     if (!Array.isArray(cards) || cards.length === 0) {
@@ -68,6 +72,8 @@ export function renderBoard(container, cards, onRestart) {
                         updateTimer();
                         clearInterval(timerInterval);
                         gameFinished = true;
+                        const elapsedMilliseconds = Date.now() - startTime;
+                        onFinish(elapsedMilliseconds, cards.length);
                         console.log("Ganaste!");                        
                     }                 
                 } else {
