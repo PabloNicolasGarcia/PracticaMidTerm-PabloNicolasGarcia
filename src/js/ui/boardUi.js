@@ -14,11 +14,13 @@ export function renderBoard(container, cards, onRestart, onFinish) {
     }
     container.innerHTML = `
         <div id = 'timer'>0m 0s</div>
+        <p id="gameStatus"></p>
         <div id = 'board'></div>
         <button id = 'restartGame'>Reiniciar partida</button>
     `;
 
     const timer = container.querySelector('#timer');
+    const gameStatus = container.querySelector('#gameStatus');
     const startTime = Date.now();
 
     function updateTimer() {
@@ -73,6 +75,7 @@ export function renderBoard(container, cards, onRestart, onFinish) {
                         clearInterval(timerInterval);
                         gameFinished = true;
                         const elapsedMilliseconds = Date.now() - startTime;
+                        gameStatus.textContent = 'Victoria!';
                         onFinish(elapsedMilliseconds, cards.length);
                         console.log("Ganaste!");                        
                     }                 
@@ -105,6 +108,6 @@ export function renderBoard(container, cards, onRestart, onFinish) {
         cleanupGame();
         onRestart(cards);
     })
-    return cleanupGame;
 
+    return cleanupGame;
 }
