@@ -1,4 +1,5 @@
 import cardBackUrl from '../../assets/card-back.jpg';
+import { createGameTimer } from '../game/gameTimer.js';
 
 export function renderBoard(container, cards, onRestart, onFinish) {
     if (typeof onRestart !== 'function') {
@@ -21,15 +22,14 @@ export function renderBoard(container, cards, onRestart, onFinish) {
 
     const timer = container.querySelector('#timer');
     const gameStatus = container.querySelector('#gameStatus');
-    const startTime = Date.now();
+    
 
-    function updateTimer() {
-        const elapsedMilliseconds = Date.now() - startTime;
+    function updateTimer(elapsedMilliseconds) {
         const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000) % 60;
         const elapsedMinute = Math.floor((elapsedMilliseconds  / 1000) / 60);
         timer.textContent = `${elapsedMinute}m ${elapsedSeconds}s`;
     };
-    const timerInterval = setInterval(updateTimer, 1000);
+    const gameTimer = createGameTimer(updateTimer);
     
 
     const board = container.querySelector('#board');    
@@ -40,7 +40,7 @@ export function renderBoard(container, cards, onRestart, onFinish) {
     let hideCardsTimeout = null;
 
     function cleanupGame() {
-        clearInterval(timerInterval);
+        gameTimer.stop();
         clearTimeout(hideCardsTimeout);
         hideCardsTimeout = null;
         gameFinished = true;
@@ -71,10 +71,10 @@ export function renderBoard(container, cards, onRestart, onFinish) {
                     selectedCards.splice(0,2);
                     matchedPairs++;
                     if (matchedPairs === totalPairs) {
-                        updateTimer();
-                        clearInterval(timerInterval);
+                        const elapsedMilliseconds = gameTimer.getElapsedMilliseconds();
+                        updateTimer(elapsedMilliseconds);
+                        gameTimer.stop();
                         gameFinished = true;
-                        const elapsedMilliseconds = Date.now() - startTime;
                         gameStatus.textContent = 'Victoria!';
                         onFinish(elapsedMilliseconds, cards.length);
                         console.log("Ganaste!");                        
