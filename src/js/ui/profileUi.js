@@ -28,7 +28,7 @@ export function renderProfile(app) {
     form.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        const username = document.getElementById('username').value;
+        const username = document.getElementById('username').value.trim();
         const usernameError = document.getElementById('usernameError');
         const pokemonFavError = document.getElementById('pokemonFavError');
 
