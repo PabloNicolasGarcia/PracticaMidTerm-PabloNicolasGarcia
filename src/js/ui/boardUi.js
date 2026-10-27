@@ -53,6 +53,15 @@ export function renderBoard(container, cards, onRestart, onFinish) {
         board.appendChild(cardButton);
         cardButton.dataset.cardId = card.id;
         const cardImage = document.createElement('img');
+
+        let imageFailed = false;
+        cardImage.addEventListener('error', () => {
+            imageFailed = true;
+            if (cardImage.parentNode === cardButton) {
+                cardButton.textContent = card.pokemon.name;
+            }
+        });
+
         cardImage.src = card.pokemon.img;
         cardImage.alt = card.pokemon.name;
         cardButton.addEventListener('click', () => {
@@ -63,7 +72,11 @@ export function renderBoard(container, cards, onRestart, onFinish) {
             if (!result) {
                 return;
             }
-            cardButton.replaceChildren(cardImage);
+            if (imageFailed) {
+                cardButton.textContent = card.pokemon.name;
+            } else {
+                cardButton.replaceChildren(cardImage);
+            }
             cardButton.disabled = true;
             if ((result.type !== 'first')){
                 if (result.type === 'match') {
