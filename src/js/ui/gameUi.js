@@ -15,7 +15,7 @@ export function renderGame(app, user) {
             <p>¡Disfruta jugando!</p>
             <p>Usuario: ${user.userName}</p>
             <p>Pokémon favorito: ${user.pokemonFavorite.name}</p>
-            <img src="${user.pokemonFavorite.img}" alt="${user.pokemonFavorite.name}">
+            <img id="favoritePokemonImage" src="${user.pokemonFavorite.img}" alt="${user.pokemonFavorite.name}">
             <p>Id del Pokémon favorito: ${user.pokemonFavorite.id}</p>
             <button id="logoutButton">Cerrar sesión</button>
         </header>
@@ -31,6 +31,11 @@ export function renderGame(app, user) {
             <div id= "listaRanking"></div>
         </aside>
     `;
+
+    const favoriteImage = app.querySelector('#favoritePokemonImage');
+    favoriteImage.addEventListener('error', () => {
+        favoriteImage.remove();
+    }, { once: true });
 
     const rankingContainer = document.getElementById('listaRanking');
 

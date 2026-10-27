@@ -121,7 +121,12 @@ export function renderProfile(app) {
                     <img src="${data.sprites.front_default}" alt="${data.name}">
                     <p>${data.name}</p>
                     `;
-                }   
+                }
+                const favoriteImage = pokemonSelectedContainer.querySelector('img');
+
+                favoriteImage.addEventListener('error', () => {
+                    favoriteImage.remove();
+                }, { once: true });   
             })
             .catch(error => {
                 if (requestVersion !== selectionVersion) {
