@@ -1,5 +1,6 @@
 import cardBackUrl from '../../assets/card-back.jpg';
 import { createGameTimer } from '../game/gameTimer.js';
+import { createGameState } from '../game/gameState.js';
 
 export function renderBoard(container, cards, onRestart, onFinish) {
     if (typeof onRestart !== 'function') {
@@ -30,13 +31,9 @@ export function renderBoard(container, cards, onRestart, onFinish) {
         timer.textContent = `${elapsedMinute}m ${elapsedSeconds}s`;
     };
     const gameTimer = createGameTimer(updateTimer);
-    
-
+    const gameState = createGameState(cards);
     const board = container.querySelector('#board');    
-    const selectedCards = [];
-    const totalPairs = cards.length / 2;
     let gameFinished = false;
-    let matchedPairs = 0;
     let hideCardsTimeout = null;
 
     function cleanupGame() {
@@ -59,18 +56,19 @@ export function renderBoard(container, cards, onRestart, onFinish) {
         cardImage.src = card.pokemon.img;
         cardImage.alt = card.pokemon.name;
         cardButton.addEventListener('click', () => {
-            if (selectedCards.length >= 2 || gameFinished){
+            if (gameFinished) {
                 return
             };
+            const result = gameState.selectedCard(card);
+            if (!result) {
+                return;
+            }
             cardButton.replaceChildren(cardImage);
             cardButton.disabled = true;
-            selectedCards.push(card);
-            if (selectedCards.length === 2){
-                if (selectedCards[0].pokemon.id === selectedCards[1].pokemon.id) {
+            if ((result.type !== 'first')){
+                if (result.type === 'match') {
                     console.log("son pareja");
-                    selectedCards.splice(0,2);
-                    matchedPairs++;
-                    if (matchedPairs === totalPairs) {
+                    if (result.gameFinished) {
                         const elapsedMilliseconds = gameTimer.getElapsedMilliseconds();
                         updateTimer(elapsedMilliseconds);
                         gameTimer.stop();
@@ -80,8 +78,8 @@ export function renderBoard(container, cards, onRestart, onFinish) {
                         console.log("Ganaste!");                        
                     }                 
                 } else {
-                    const buttonCardOne = board.querySelector(`[data-card-id="${selectedCards[0].id}"]`);
-                    const buttonCardTwo = board.querySelector(`[data-card-id="${selectedCards[1].id}"]`);
+                    const buttonCardOne = board.querySelector(`[data-card-id="${result.cards[0].id}"]`);
+                    const buttonCardTwo = board.querySelector(`[data-card-id="${result.cards[1].id}"]`);
 
                     if (!buttonCardOne || !buttonCardTwo) {
                         return
@@ -92,7 +90,7 @@ export function renderBoard(container, cards, onRestart, onFinish) {
                         buttonCardTwo.disabled = false;
                         buttonCardOne.replaceChildren(cardImageBack.cloneNode(true));
                         buttonCardTwo.replaceChildren(cardImageBack.cloneNode(true));
-                        selectedCards.splice(0,2);
+                        gameState.clearSelectedCards();
                         hideCardsTimeout = null;
                     }, 1000);
 
