@@ -116,7 +116,7 @@ export function renderProfile(app) {
                     <img src="${data.sprites.front_default}" alt="${data.name}">
                     <p>${data.name}</p>
                     `;
-                }
+                }   
             })
             .catch(error => {
                 if (requestVersion !== selectionVersion) {
