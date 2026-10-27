@@ -13,7 +13,7 @@ export function renderGame(app, user) {
         <header>
             <h1>Bienvenido al juego</h1>
             <p>¡Disfruta jugando!</p>
-            <p>Usuario: ${user.userName}</p>
+            <p id="gameUsername"></p>
             <p>Pokémon favorito: ${user.pokemonFavorite.name}</p>
             <img id="favoritePokemonImage" src="${user.pokemonFavorite.img}" alt="${user.pokemonFavorite.name}">
             <p>Id del Pokémon favorito: ${user.pokemonFavorite.id}</p>
@@ -32,6 +32,7 @@ export function renderGame(app, user) {
         </aside>
     `;
 
+    app.querySelector('#gameUsername').textContent = `Usuario: ${user.userName}`;
     const favoriteImage = app.querySelector('#favoritePokemonImage');
     favoriteImage.addEventListener('error', () => {
         favoriteImage.remove();
