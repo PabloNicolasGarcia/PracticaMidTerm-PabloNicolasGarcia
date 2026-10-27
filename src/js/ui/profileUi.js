@@ -47,8 +47,13 @@ export function renderProfile(app) {
         }
 
         const user = new User(username, new Pokemon(selectedPokemon.name, selectedPokemon.id, selectedPokemon.sprites.front_default));
-        saveUserToSessionStorage(user);
 
+        try {
+            saveUserToSessionStorage(user);
+        } catch {
+            pokemonFavError.textContent = 'No se pudo guardar el perfil. Inténtalo de nuevo.';
+            return;
+        }
         renderGame(app, user);
     });
 

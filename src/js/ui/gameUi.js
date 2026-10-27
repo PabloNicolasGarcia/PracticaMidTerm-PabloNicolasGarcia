@@ -86,10 +86,15 @@ export function renderGame(app, user) {
 
     const logoutButton = document.getElementById('logoutButton');
     logoutButton.addEventListener('click', () => {
+        try {
+            clearUserFromSessionStorage();
+        } catch {
+            gameError.textContent = 'No se pudo cerrar la sesión. Inténtalo de nuevo.';
+            return;
+        }
         if (typeof cleanupBoard === 'function') {
             cleanupBoard();
         }
-        clearUserFromSessionStorage();
         renderProfile(app);
     });
 
