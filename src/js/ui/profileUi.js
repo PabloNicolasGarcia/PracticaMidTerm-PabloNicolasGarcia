@@ -22,6 +22,7 @@ export function renderProfile(app) {
     `;
 
     let selectedPokemon = null;
+    let selectionVersion = 0;
 
     const form = document.getElementById('profile-form');
     form.addEventListener('submit', (event) => {
@@ -72,6 +73,7 @@ export function renderProfile(app) {
         });
 
     pokemonFavInput.addEventListener('input', () => {
+        selectionVersion++
         selectedPokemon = null;
         pokemonSelectedContainer.innerHTML = '';
         if (pokemonList.length === 0) {
@@ -99,9 +101,14 @@ export function renderProfile(app) {
             pokemonFavSuggestions.innerHTML = '';
             selectedPokemon = null;
             pokemonSelectedContainer.innerHTML = '';
+            selectionVersion++;
+            const requestVersion = selectionVersion;
 
         getPokemonData(pokemonFavInput.value.trim().toLowerCase())
             .then(data => {
+                if (requestVersion !== selectionVersion) {
+                    return;
+                }
                 pokemonFavError.textContent = '';
                 selectedPokemon = data;
                 if (data) {
@@ -112,6 +119,9 @@ export function renderProfile(app) {
                 }
             })
             .catch(error => {
+                if (requestVersion !== selectionVersion) {
+                    return;
+                }
                 console.error('Error al obtener los datos del Pokémon:', error);
                 selectedPokemon = null;
                 pokemonSelectedContainer.innerHTML = '';
