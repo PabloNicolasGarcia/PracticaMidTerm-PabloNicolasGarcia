@@ -81,6 +81,9 @@ export function renderBoard(container, cards, onRestart, onFinish) {
             if ((result.type !== 'first')){
                 if (result.type === 'match') {
                     console.log("son pareja");
+                    board.querySelectorAll('button:disabled').forEach(button => {
+                        button.classList.add('matched');
+                    });
                     if (result.gameFinished) {
                         const elapsedMilliseconds = gameTimer.getElapsedMilliseconds();
                         updateTimer(elapsedMilliseconds);
