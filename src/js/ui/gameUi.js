@@ -1,6 +1,6 @@
-import {clearUserFromSessionStorage} from '../storage/sessionStorage.js';
-import {renderProfile} from './profileUi.js';
-import {numCartasValidation} from '../validations/gameValidations.js';
+import { clearUserFromSessionStorage } from '../storage/sessionStorage.js';
+import { renderProfile } from './profileUi.js';
+import { numCartasValidation } from '../validations/gameValidations.js';
 import { renderBoard } from './boardUi.js';
 import { prepareGame, shuffleCards } from '../game/gameSetup.js';
 import { GameResult } from '../models/gameResult.js';
@@ -59,8 +59,8 @@ export function renderGame(app, user) {
     startGameButton.addEventListener('click', async () => {
         const numCartasInput = document.getElementById('numCartas');
         const numCartasError = document.getElementById('numCartasError');
-        const numCartas = Number(numCartasInput.value);  
-        gameError.textContent = '';      
+        const numCartas = Number(numCartasInput.value);
+        gameError.textContent = '';
 
         if (!numCartasValidation(numCartas)) {
             numCartasError.textContent = 'El numero de cartas debe de ser positivo, entero y par';
@@ -71,15 +71,13 @@ export function renderGame(app, user) {
 
         startGameButton.disabled = true;
         startGameButton.textContent = 'Cargando…';
-        
+
         try {
             const cards = await prepareGame(numCartas);
 
             if (!startingGame.isConnected) {
                 return;
             }
-
-            console.log(cards);
             cleanupBoard = renderBoard(startingGame, cards, restartGame, finishGame);
         } catch (error) {
             gameError.textContent = error.message;
@@ -106,7 +104,7 @@ export function renderGame(app, user) {
 
     function restartGame(cards) {
         gameError.textContent = '';
-        try{
+        try {
             shuffleCards(cards);
             cleanupBoard = renderBoard(startingGame, cards, restartGame, finishGame);
         } catch (error) {
@@ -120,12 +118,9 @@ export function renderGame(app, user) {
             const gameResult = new GameResult(id, user.userName, user.pokemonFavorite, elapsedMilliseconds, numCards);
             saveGameResult(gameResult);
             updateRanking(gameResult.id);
-            console.log(gameResult);
         } catch {
             gameError.textContent = 'No se puedo guardar el registro de la partida correctamente'
         }
-        
-    }
 
-    console.log('Usuario en renderGame:', user);
+    }
 }

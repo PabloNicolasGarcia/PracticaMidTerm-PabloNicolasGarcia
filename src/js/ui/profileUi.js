@@ -1,9 +1,9 @@
-import {validateUsername} from '../validations/profileValidation.js';
-import {getPokemonList, getPokemonData} from '../api/pokeApi.js';
-import {User} from '../models/user.js';
-import {Pokemon} from '../models/pokemon.js';
-import {saveUserToSessionStorage} from '../storage/sessionStorage.js';
-import {renderGame} from './gameUi.js';
+import { validateUsername } from '../validations/profileValidation.js';
+import { getPokemonList, getPokemonData } from '../api/pokeApi.js';
+import { User } from '../models/user.js';
+import { Pokemon } from '../models/pokemon.js';
+import { saveUserToSessionStorage } from '../storage/sessionStorage.js';
+import { renderGame } from './gameUi.js';
 
 export function renderProfile(app) {
     app.innerHTML = `
@@ -90,15 +90,15 @@ export function renderProfile(app) {
         }
 
         const coincidencias = pokemonList.filter(pokemon =>
-        pokemon.name.includes(pokemonFavInput.value.trim().toLowerCase())
+            pokemon.name.includes(pokemonFavInput.value.trim().toLowerCase())
         );
-        pokemonFavSuggestions.innerHTML = coincidencias.slice(0, 5).map(pokemon => 
+        pokemonFavSuggestions.innerHTML = coincidencias.slice(0, 5).map(pokemon =>
             `<div>${pokemon.name}</div>`).join('');
 
 
     });
 
-   const pokemonSelectedContainer = document.getElementById('pokemonSelected');
+    const pokemonSelectedContainer = document.getElementById('pokemonSelected');
 
     pokemonFavSuggestions.addEventListener('click', (event) => {
         if (event.target.tagName === 'DIV') {
@@ -109,34 +109,34 @@ export function renderProfile(app) {
             selectionVersion++;
             const requestVersion = selectionVersion;
 
-        getPokemonData(pokemonFavInput.value.trim().toLowerCase())
-            .then(data => {
-                if (requestVersion !== selectionVersion) {
-                    return;
-                }
-                pokemonFavError.textContent = '';
-                selectedPokemon = data;
-                if (data) {
-                    pokemonSelectedContainer.innerHTML = `
+            getPokemonData(pokemonFavInput.value.trim().toLowerCase())
+                .then(data => {
+                    if (requestVersion !== selectionVersion) {
+                        return;
+                    }
+                    pokemonFavError.textContent = '';
+                    selectedPokemon = data;
+                    if (data) {
+                        pokemonSelectedContainer.innerHTML = `
                     <img src="${data.sprites.front_default}" alt="${data.name}">
                     <p>${data.name}</p>
                     `;
-                }
-                const favoriteImage = pokemonSelectedContainer.querySelector('img');
+                    }
+                    const favoriteImage = pokemonSelectedContainer.querySelector('img');
 
-                favoriteImage.addEventListener('error', () => {
-                    favoriteImage.remove();
-                }, { once: true });   
-            })
-            .catch(error => {
-                if (requestVersion !== selectionVersion) {
-                    return;
-                }
-                console.error('Error al obtener los datos del Pokémon:', error);
-                selectedPokemon = null;
-                pokemonSelectedContainer.innerHTML = '';
-                pokemonFavError.textContent = 'No se pudo cargar el Pokémon. Vuelve a buscarlo y seleccionarlo.';
-            });
+                    favoriteImage.addEventListener('error', () => {
+                        favoriteImage.remove();
+                    }, { once: true });
+                })
+                .catch(error => {
+                    if (requestVersion !== selectionVersion) {
+                        return;
+                    }
+                    console.error('Error al obtener los datos del Pokémon:', error);
+                    selectedPokemon = null;
+                    pokemonSelectedContainer.innerHTML = '';
+                    pokemonFavError.textContent = 'No se pudo cargar el Pokémon. Vuelve a buscarlo y seleccionarlo.';
+                });
 
         }
 
