@@ -10,14 +10,14 @@ export function getPokemonList() {
             if (data === null || typeof data !== 'object' || !Array.isArray(data.results)) {
                 throw new Error('La lista de Pokémon no es válida');
             }
-            if (!data.results.every(pokemon => pokemon !== null && typeof pokemon === 'object' && 
+            if (!data.results.every(pokemon => pokemon !== null && typeof pokemon === 'object' &&
                 typeof pokemon.name === 'string' && pokemon.name.trim() !== ''
             )) {
                 throw new Error('La lista contiene Pokémon con datos no válidos');
             }
 
-    return data;
-});
+            return data;
+        });
 }
 
 export function getPokemonData(namePokemon) {
@@ -49,6 +49,6 @@ export function getPokemonData(namePokemon) {
                 throw new Error('Este Pokémon no tiene una imagen disponible');
             }
 
-        return data;
+            return data;
         });
 }

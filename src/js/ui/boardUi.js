@@ -15,24 +15,24 @@ export function renderBoard(container, cards, onRestart, onFinish) {
         throw new Error('No hay cartas disponibles para mostrar');
     }
     container.innerHTML = `
-        <div id = 'timer'>0m 0s</div>
+        <div id = "timer">0m 0s</div>
         <p id="gameStatus"></p>
-        <div id = 'board'></div>
-        <button id = 'restartGame'>Reiniciar partida</button>
+        <div id = "board"></div>
+        <button id = "restartGame">Reiniciar partida</button>
     `;
 
     const timer = container.querySelector('#timer');
     const gameStatus = container.querySelector('#gameStatus');
-    
+
 
     function updateTimer(elapsedMilliseconds) {
         const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000) % 60;
-        const elapsedMinute = Math.floor((elapsedMilliseconds  / 1000) / 60);
+        const elapsedMinute = Math.floor((elapsedMilliseconds / 1000) / 60);
         timer.textContent = `${elapsedMinute}m ${elapsedSeconds}s`;
     };
     const gameTimer = createGameTimer(updateTimer);
     const gameState = createGameState(cards);
-    const board = container.querySelector('#board');    
+    const board = container.querySelector('#board');
     let gameFinished = false;
     let hideCardsTimeout = null;
 
@@ -42,7 +42,7 @@ export function renderBoard(container, cards, onRestart, onFinish) {
         hideCardsTimeout = null;
         gameFinished = true;
     }
-   
+
 
     cards.forEach(card => {
         const cardButton = document.createElement('button');
@@ -78,9 +78,8 @@ export function renderBoard(container, cards, onRestart, onFinish) {
                 cardButton.replaceChildren(cardImage);
             }
             cardButton.disabled = true;
-            if ((result.type !== 'first')){
+            if ((result.type !== 'first')) {
                 if (result.type === 'match') {
-                    console.log("son pareja");
                     board.querySelectorAll('button:disabled').forEach(button => {
                         button.classList.add('matched');
                     });
@@ -91,8 +90,7 @@ export function renderBoard(container, cards, onRestart, onFinish) {
                         gameFinished = true;
                         gameStatus.textContent = 'Victoria!';
                         onFinish(elapsedMilliseconds, cards.length);
-                        console.log("Ganaste!");                        
-                    }                 
+                    }
                 } else {
                     const buttonCardOne = board.querySelector(`[data-card-id="${result.cards[0].id}"]`);
                     const buttonCardTwo = board.querySelector(`[data-card-id="${result.cards[1].id}"]`);
@@ -109,11 +107,8 @@ export function renderBoard(container, cards, onRestart, onFinish) {
                         gameState.clearSelectedCards();
                         hideCardsTimeout = null;
                     }, 1000);
-
-                    console.log("No son pareja");
-                    
-                }               
-            }            
+                }
+            }
         })
     });
 

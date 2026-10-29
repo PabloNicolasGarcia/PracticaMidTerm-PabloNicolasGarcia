@@ -20,7 +20,7 @@ export function renderRanking(container, results, idLastGame) {
             <tbody>
             </tbody>
         </table>
-        <p id=omittedResults></p>
+        <p id="omittedResults"></p>
     `;
 
     const tableBody = container.querySelector('tbody');
