@@ -8,7 +8,7 @@ import { saveGameResult, getGameHistory } from '../storage/gameHistoryStorage.js
 import { sortGameResults } from '../rankings/ranking.js';
 import { renderRanking } from './rankingUi.js';
 
-export function renderGame(app, user) {
+export function renderGame(app, user, idLastGame = null) {
     app.innerHTML = `
         <header>
             <h1>Bienvenido al juego</h1>
@@ -40,7 +40,7 @@ export function renderGame(app, user) {
 
     const rankingContainer = document.getElementById('listaRanking');
 
-    function updateRanking(idLastGame = null) {
+    function updateRanking(idLastGame) {
         try {
             const gameHistory = getGameHistory();
             const sortedResults = sortGameResults(gameHistory);
@@ -49,7 +49,7 @@ export function renderGame(app, user) {
             rankingContainer.textContent = 'No se pudo cargar el Ranking';
         }
     }
-    updateRanking();
+    updateRanking(idLastGame);
 
     const startingGame = document.getElementById('startingGame')
     const gameError = document.getElementById('gameError')
@@ -117,6 +117,7 @@ export function renderGame(app, user) {
             const id = crypto.randomUUID()
             const gameResult = new GameResult(id, user.userName, user.pokemonFavorite, elapsedMilliseconds, numCards);
             saveGameResult(gameResult);
+            idLastGame = id;
             updateRanking(gameResult.id);
         } catch {
             gameError.textContent = 'No se puedo guardar el registro de la partida correctamente'
@@ -125,6 +126,6 @@ export function renderGame(app, user) {
     }
 
     function endGame() {
-        renderGame(app, user);
+        renderGame(app, user, idLastGame);
     }
 }
