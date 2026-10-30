@@ -1,7 +1,7 @@
 # Pablo Nicolas Garcia — PokeMemory
 
 🌐 **Aplicación:** [Jugar a PokeMemory](https://pablonicolasgarcia.github.io/PracticaMidTerm-PabloNicolasGarcia/)  
-🎬 **Vídeo de demostración:** 
+🎬 **Vídeo de demostración:** https://www.youtube.com/watch?v=SDCdufYEmdo
 
 Juego de memoria desarrollado con **JavaScript Vanilla**, utilizando **[PokéAPI](https://pokeapi.co/)** para obtener los Pokémon. Encuentra todas las parejas en el menor tiempo posible.
 
