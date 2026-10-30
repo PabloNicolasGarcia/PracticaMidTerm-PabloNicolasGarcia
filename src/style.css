@@ -182,7 +182,7 @@ header p { margin: 3px 0; color: var(--muted); font-size: .88rem; }
 }
 #timer::before { content: 'TIEMPO'; color: var(--muted); font-size: .62rem; letter-spacing: 1.5px; font-weight: 800; }
 #startingGame:has(#board) { position: relative; background: linear-gradient(155deg, #e2f7ff, #f5fcff); }
-#restartGame { position: absolute; right: 24px; top: 29px; background: linear-gradient(#f85159, #e33243); border-color: #dd2c3d; font-size: .8rem; min-height: 38px; padding: 9px 13px; }
+#restartGame { background: linear-gradient(#f85159, #e33243); border-color: #dd2c3d; font-size: .8rem; min-height: 38px; padding: 9px 13px; }
 #board {
   margin-top: 22px;
   display: grid;
@@ -244,7 +244,7 @@ header p { margin: 3px 0; color: var(--muted); font-size: .88rem; }
   #startingGame { padding: 15px; }
   #board { gap: 8px; margin-top: 18px; }
   #board > button { padding: 4px; border-radius: 9px; }
-  #restartGame { right: 15px; top: 23px; font-size: .7rem; padding: 8px 10px; }
+  #restartGame { font-size: .7rem; padding: 8px 10px; }
   #timer { padding: 8px 14px; min-width: 110px; font-size: 1.15rem; }
   #profile-title { padding: 21px 19px 17px; }
   #profile-form { padding: 0 19px 22px; }
@@ -271,5 +271,37 @@ header p { margin: 3px 0; color: var(--muted); font-size: .88rem; }
   #app:not(:has(#profile-form)) {
     max-width: 1200px;
     grid-template-columns: minmax(0, 1fr) 410px;
+  }
+}
+
+.board-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.board-toolbar #timer {
+  margin-right: auto;
+}
+
+.board-toolbar #endGame,
+.board-toolbar #restartGame {
+  min-height: 38px;
+  padding: 9px 13px;
+  font-size: .8rem;
+}
+
+@media (max-width: 480px) {
+  .board-toolbar #timer {
+    flex-basis: 100%;
+    margin-right: 0;
+  }
+
+  .board-toolbar #endGame,
+  .board-toolbar #restartGame {
+    flex: 1;
+    padding: 9px 8px;
+    font-size: .72rem;
   }
 }

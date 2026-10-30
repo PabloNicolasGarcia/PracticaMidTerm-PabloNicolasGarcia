@@ -2,23 +2,30 @@ import cardBackUrl from '../../assets/card-back.jpg';
 import { createGameTimer } from '../game/gameTimer.js';
 import { createGameState } from '../game/gameState.js';
 
-export function renderBoard(container, cards, onRestart, onFinish) {
+export function renderBoard(container, cards, onRestart, onFinish, onEndGame) {
     if (typeof onRestart !== 'function') {
         throw new Error('No se recibió una función válida para reiniciar')
     }
 
     if (typeof onFinish !== 'function') {
-        throw new Error('No se recibió una función válida para finalizar')
+        throw new Error('No se recibió una función válida para finalizar partida completada')
+    }
+
+    if (typeof onEndGame !== 'function') {
+        throw new Error('No se recibió una función válida para finalizar partida sin completar')
     }
 
     if (!Array.isArray(cards) || cards.length === 0) {
         throw new Error('No hay cartas disponibles para mostrar');
     }
     container.innerHTML = `
-        <div id = "timer">0m 0s</div>
+        <div class="board-toolbar">
+            <div id = "timer">0m 0s</div>
+            <button id="endGame">Finalizar partida</button>
+            <button id = "restartGame">Reiniciar partida</button>
+        </div>
         <p id="gameStatus"></p>
         <div id = "board"></div>
-        <button id = "restartGame">Reiniciar partida</button>
     `;
 
     const timer = container.querySelector('#timer');
@@ -116,6 +123,12 @@ export function renderBoard(container, cards, onRestart, onFinish) {
     restartGame.addEventListener('click', () => {
         cleanupGame();
         onRestart(cards);
+    })
+
+    const endGame = container.querySelector('#endGame')
+    endGame.addEventListener('click', () => {
+        cleanupGame();
+        onEndGame();
     })
 
     return cleanupGame;
