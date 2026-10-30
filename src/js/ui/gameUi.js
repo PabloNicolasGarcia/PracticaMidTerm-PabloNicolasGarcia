@@ -78,7 +78,7 @@ export function renderGame(app, user) {
             if (!startingGame.isConnected) {
                 return;
             }
-            cleanupBoard = renderBoard(startingGame, cards, restartGame, finishGame);
+            cleanupBoard = renderBoard(startingGame, cards, restartGame, finishGame, endGame);
         } catch (error) {
             gameError.textContent = error.message;
         } finally {
@@ -106,7 +106,7 @@ export function renderGame(app, user) {
         gameError.textContent = '';
         try {
             shuffleCards(cards);
-            cleanupBoard = renderBoard(startingGame, cards, restartGame, finishGame);
+            cleanupBoard = renderBoard(startingGame, cards, restartGame, finishGame, endGame);
         } catch (error) {
             gameError.textContent = error.message;
         }
@@ -122,5 +122,9 @@ export function renderGame(app, user) {
             gameError.textContent = 'No se puedo guardar el registro de la partida correctamente'
         }
 
+    }
+
+    function endGame() {
+        renderGame(app, user);
     }
 }
