@@ -74,7 +74,8 @@ export function renderGame(app, user, idLastGame = null) {
 
         try {
             const cards = await prepareGame(numCartas);
-
+            // Si el usuario ha salido de esta pantalla durante la carga,
+            // descartamos las cartas sin crear un tablero ni otro temporizador.
             if (!startingGame.isConnected) {
                 return;
             }
@@ -117,6 +118,8 @@ export function renderGame(app, user, idLastGame = null) {
             const id = crypto.randomUUID()
             const gameResult = new GameResult(id, user.userName, user.pokemonFavorite, elapsedMilliseconds, numCards);
             saveGameResult(gameResult);
+            // Recordamos únicamente el último resultado guardado correctamente
+            // para mantenerlo visible al volver a la selección de cartas.
             idLastGame = id;
             updateRanking(gameResult.id);
         } catch {
@@ -124,7 +127,8 @@ export function renderGame(app, user, idLastGame = null) {
         }
 
     }
-
+    // Volvemos a la selección conservando el perfil y el último resultado.
+    // Abandonar una partida no genera un nuevo registro.
     function endGame() {
         renderGame(app, user, idLastGame);
     }

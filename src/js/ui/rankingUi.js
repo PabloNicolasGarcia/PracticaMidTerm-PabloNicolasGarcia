@@ -27,6 +27,8 @@ export function renderRanking(container, results, idLastGame) {
     let visibleResults = 0;
 
     results.forEach((result, index) => {
+        // Mostramos las cinco primeras posiciones y el último resultado,
+        // aunque este quede fuera del grupo inicial.
         if (index < 5 || result.id === idLastGame) {
             const row = document.createElement('tr');
             const tdPosition = document.createElement('td');
@@ -38,7 +40,7 @@ export function renderRanking(container, results, idLastGame) {
             const minutes = Math.floor((result.elapsedMilliseconds / 1000) / 60);
             const seconds = Math.floor((result.elapsedMilliseconds / 1000) % 60);
             const time = `${minutes}m ${seconds}s`
-
+            // La posición corresponde al ranking completo, no solo a las filas visibles.
             tdPosition.textContent = index + 1;
             tdPlayer.textContent = result.userName;
             tdPokemon.textContent = result.pokemonFavorite.name;

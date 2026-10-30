@@ -4,7 +4,7 @@ export function createGameTimer(onTick) {
     }
 
     const startTime = Date.now();
-
+    // Calculamos el tiempo real transcurrido para no acumular los retrasos del intervalo.
     function getElapsedMilliseconds() {
         const elapsedMilliseconds = Date.now() - startTime;
         return elapsedMilliseconds

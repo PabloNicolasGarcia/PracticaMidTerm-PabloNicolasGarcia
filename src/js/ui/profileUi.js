@@ -22,6 +22,7 @@ export function renderProfile(app) {
     `;
 
     let selectedPokemon = null;
+    // Cambia al escribir o seleccionar otro Pokémon para invalidar peticiones anteriores.
     let selectionVersion = 0;
 
     const form = document.getElementById('profile-form');
@@ -107,6 +108,8 @@ export function renderProfile(app) {
             selectedPokemon = null;
             pokemonSelectedContainer.innerHTML = '';
             selectionVersion++;
+            // Cada petición conserva su versión para descartar tanto respuestas
+            // como errores que lleguen después de haber cambiado la selección.
             const requestVersion = selectionVersion;
 
             getPokemonData(pokemonFavInput.value.trim().toLowerCase())

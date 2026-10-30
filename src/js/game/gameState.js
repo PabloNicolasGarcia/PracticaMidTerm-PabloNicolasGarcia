@@ -10,6 +10,7 @@ export function createGameState(cards) {
     let matchedPairs = 0;
 
     function selectedCard(card) {
+        // Las reglas rechazan selecciones inválidas sin depender del estado de los botones.
         if (selectedCards.length >= 2 || gameFinished || matchedCardIds.includes(card.id) || selectedCards.some(selectedCard => selectedCard.id === card.id)){
                 return
         };
@@ -30,10 +31,12 @@ export function createGameState(cards) {
                 }
                 return { type: 'match', gameFinished };
             }
+            // Conservamos las dos cartas seleccionadas para bloquear el siguiente turno.
+            // La copia permite informar a la interfaz sin compartir el array interno.
             return { type: 'mismatch', cards: [...selectedCards] };
         }
     }
-
+    // La interfaz libera el turno cuando termina de ocultar las cartas que no coinciden.
     function clearSelectedCards() {
         selectedCards.splice(0,2)
     }

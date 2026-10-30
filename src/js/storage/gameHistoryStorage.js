@@ -3,7 +3,8 @@ export function getGameHistory() {
     if (history === null) {
         return [];
     }
-    
+    // Los errores se propagan a la interfaz para no sustituir un historial
+    // dañado por un array vacío y sobrescribir los datos anteriores.
     const parsedHistory = JSON.parse(history);
 
     if (!Array.isArray(parsedHistory)) {
@@ -15,7 +16,7 @@ export function getGameHistory() {
 
 export function saveGameResult(gameResult) {
     const history = getGameHistory()
-
+    // El identificador evita guardar dos veces el mismo resultado.
     if (history.some(result => result.id === gameResult.id)) {
         return;
     }
