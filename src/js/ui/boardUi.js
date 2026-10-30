@@ -42,7 +42,7 @@ export function renderBoard(container, cards, onRestart, onFinish, onEndGame) {
     const board = container.querySelector('#board');
     let gameFinished = false;
     let hideCardsTimeout = null;
-
+    // Detiene el reloj, cancela la ocultación pendiente y bloquea el tablero anterior.
     function cleanupGame() {
         gameTimer.stop();
         clearTimeout(hideCardsTimeout);
@@ -60,7 +60,8 @@ export function renderBoard(container, cards, onRestart, onFinish, onEndGame) {
         board.appendChild(cardButton);
         cardButton.dataset.cardId = card.id;
         const cardImage = document.createElement('img');
-
+        // Si falla la descarga, recordamos el error sin revelar una carta oculta.
+        // El nombre sustituye a la imagen únicamente cuando la carta está descubierta.
         let imageFailed = false;
         cardImage.addEventListener('error', () => {
             imageFailed = true;
@@ -87,10 +88,14 @@ export function renderBoard(container, cards, onRestart, onFinish, onEndGame) {
             cardButton.disabled = true;
             if ((result.type !== 'first')) {
                 if (result.type === 'match') {
+                    // En este punto los botones desactivados son las parejas anteriores
+                    // y las dos cartas que acaban de coincidir.
                     board.querySelectorAll('button:disabled').forEach(button => {
                         button.classList.add('matched');
                     });
                     if (result.gameFinished) {
+                        // Fijamos el tiempo mostrado y bloqueamos el juego antes de comunicar
+                        // la victoria, evitando que nuevas selecciones repitan el guardado.
                         const elapsedMilliseconds = gameTimer.getElapsedMilliseconds();
                         updateTimer(elapsedMilliseconds);
                         gameTimer.stop();
@@ -130,6 +135,6 @@ export function renderBoard(container, cards, onRestart, onFinish, onEndGame) {
         cleanupGame();
         onEndGame();
     })
-
+    // Permite que la pantalla principal libere también el tablero al cerrar sesión.
     return cleanupGame;
 }

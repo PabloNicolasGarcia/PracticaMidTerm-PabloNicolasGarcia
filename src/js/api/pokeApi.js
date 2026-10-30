@@ -32,6 +32,8 @@ export function getPokemonData(namePokemon) {
             }
             return response.json();
         })
+        // Una respuesta HTTP correcta también debe contener los datos necesarios
+        // antes de utilizarse en el perfil o en las cartas.
         .then(data => {
             if (data === null || typeof data !== 'object' || Array.isArray(data)) {
                 throw new Error('Los datos del Pokémon no son válidos');
@@ -45,6 +47,7 @@ export function getPokemonData(namePokemon) {
             if (data.sprites === null || typeof data.sprites !== 'object' || Array.isArray(data.sprites)) {
                 throw new Error('Los datos de imágenes del Pokémon no son válidos');
             }
+            // Se rechazan los Pokémon sin imagen para no preparar cartas sin representación visual.
             if (typeof data.sprites.front_default !== 'string' || data.sprites.front_default.trim() === '') {
                 throw new Error('Este Pokémon no tiene una imagen disponible');
             }

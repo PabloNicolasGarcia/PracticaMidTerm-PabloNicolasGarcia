@@ -21,7 +21,7 @@ export async function prepareGame(numCartas) {
     }
 
     let finalPokemons = [];
-    
+    // Cada Pokémon elegido se elimina de la lista de candidatos para evitar parejas repetidas.
     for (let i = 0; i < numPokemons; i++) {
         const randomIndex = Math.floor(Math.random() * pokemonList.length)
         const selectedPokemon = pokemonList[randomIndex]
@@ -32,9 +32,11 @@ export async function prepareGame(numCartas) {
     const pokemonPromises = finalPokemons.map(element => {
         return getPokemonData(element.name)
     });
-
+    // Esperamos todas las consultas antes de crear el tablero.
+    // Si alguna falla, no se inicia una partida incompleta.
     const pokemons = await Promise.all(pokemonPromises);
     const cards = [];
+    // Cada pareja comparte Pokémon, pero sus dos cartas tienen identificadores distintos.
     pokemons.forEach(pokemon => {
         const pokemonModel = new Pokemon(pokemon.name, pokemon.id, pokemon.sprites.front_default);
         cards.push(new Card(cards.length, pokemonModel));
@@ -44,7 +46,8 @@ export async function prepareGame(numCartas) {
     return shuffleCards(cards);
     
 }
-
+// Mezcla Fisher–Yates: intercambia cada posición con una posición aleatoria
+// del tramo que todavía queda por mezclar. Modifica el array recibido.
 export function shuffleCards(cards) {
         for (let i = cards.length -1; i > 0; i--) {
         const randomIndex = Math.floor(Math.random() * (i + 1))
