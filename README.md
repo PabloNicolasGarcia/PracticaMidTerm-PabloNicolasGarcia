@@ -11,6 +11,7 @@ Juego de memoria desarrollado con **JavaScript Vanilla**, utilizando **[PokéAPI
 - Recuperar el perfil durante la sesión con `sessionStorage`.
 - Elegir un número par de cartas y jugar con parejas aleatorias.
 - Consultar el tiempo transcurrido y reiniciar la partida.
+- Finalizar una partida y volver a elegir el número de cartas sin cerrar sesión ni guardar la partida abandonada.
 - Guardar los resultados en `localStorage`.
 - Mostrar un ranking ordenado por número de cartas y tiempo.
 - Distinguir las parejas encontradas y el último resultado.
